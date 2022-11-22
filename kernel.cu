@@ -7,7 +7,6 @@
 #include "device_launch_parameters.h"
 #include <time.h>
 #include <cuda_fp16.h>
-
 #include "main.cuh"
 #include "file_handler.cuh"
 #include "math_operation.cuh"
@@ -26,7 +25,6 @@ __global__ void kernel(matrix_t matrix_data[], double* array1, double* array2, d
 	{
 		for (int i = 0; i < matrix_data[FIRST_MATRIX].columns; i++)
 		{
-			//temp += matrix_data[FIRST_MATRIX].ptrArray[(row * matrix_data[FIRST_MATRIX].columns) + i] * matrix_data[SECOND_MATRIX].ptrArray[(i * matrix_data[SECOND_MATRIX].columns) + column];
 			temp += array1[(row * matrix_data[FIRST_MATRIX].columns) + i] * array2[(i * matrix_data[SECOND_MATRIX].columns) + column];
 		}
 	}
@@ -113,20 +111,7 @@ int main(void)
 
 	//Declare variables
 	cudaGetDeviceProperties(&prop, 0);
-	//int num_threads_supported = prop.maxThreadsPerBlock;
-	//int num_blocks_supported = prop.maxThreadsDim[0];
 
-
-	//Grid Size
-	//int NUM_BLOCKS = num_blocks_supported;
-
-	//Threadblock size
-	//int NUM_THREADS = num_threads_supported;
-	//long long total_threads = NUM_BLOCKS * NUM_THREADS;
-	long long numThreadsNeeded = matrix_data[RESULT_MATRIX].numElements;
-
-	size_t bytes = numThreadsNeeded * numThreadsNeeded * sizeof(double);
-	//printf("%lld \n\n", numThreadsNeeded);
 	int maxBLOCK_SIZE_X = prop.maxThreadsDim[0];
 	int maxBLOCK_SIZE_Y = prop.maxThreadsDim[1];
 	int maxGRID_SIZE_X = prop.maxGridSize[0];
@@ -134,12 +119,6 @@ int main(void)
 	int maxThreadsAvailable_x = maxBLOCK_SIZE_X * maxGRID_SIZE_X;
 	int maxThreadsAvailable_y = maxBLOCK_SIZE_Y * maxGRID_SIZE_Y;
 
-	/*printf(" max block size%d,%d \n\n", maxBLOCK_SIZE_X, maxBLOCK_SIZE_Y);
-	printf("max grid size %lld,%lld\n\n", maxGRID_SIZE_X, maxGRID_SIZE_Y);*/
-	/*int n = 2;
-
-	dim3 blocksPerGrid(1,1);
-	dim3 threadsPerBlock(n,n);*/
 	int blockdim = 32;
 	int m = matrix_data[FIRST_MATRIX].rows;
 	int p = matrix_data[SECOND_MATRIX].columns;
@@ -149,14 +128,17 @@ int main(void)
 	blocksPerGrid.x = ceil(double(p)/threadsPerBlock.x);
 	blocksPerGrid.y = ceil(double(m)/threadsPerBlock.y);
 
+	
 
+	clock_t start_t, end_t, total_t;
+	start_t = clock();
+	matrix_mult_serial(matrix_data);
+	end_t = clock();
+	total_t = end_t - start_t;
+	printf("\nTiempo: %f s\n", (((float)total_t) / CLOCKS_PER_SEC));
 	// start recording
 	cudaEventRecord(start);
-	//matrix_mult_serial(matrix_data);
 	//Launch the kernel
-
-
-
 	kernel << <  blocksPerGrid, threadsPerBlock >> > (d_matrix_data, d_a1, d_a2, d_a3);
 
 	cudaEventRecord(stop);
@@ -189,7 +171,7 @@ int main(void)
 
 	
 	//print_matrix(RESULT_MATRIX);
-	printf(" (Total time: %lf)\n", milliseconds);
+	printf(" (Total time: %lf ms)\n", milliseconds);
 	writeElements(matrix_data);
 Error:
 	//De-allocate memory

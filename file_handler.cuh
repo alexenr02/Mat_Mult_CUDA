@@ -5,7 +5,7 @@
 #define READING_MODE                        "r"
 #define WRITING_MODE                        "w"
 #define W_R_MODE							"w+"
-#if 1
+#if 0
 #define MATRIXA_FILENAME                    "matrizA.txt"
 #define MATRIXB_FILENAME                    "matrizB.txt"
 #else
