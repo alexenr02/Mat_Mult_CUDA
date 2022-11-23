@@ -22,11 +22,7 @@
 
 
 #define ALIGNMENT_8                         8
-#define FIRST_MATRIX                        0
-#define SECOND_MATRIX                       1
-#define RESULT_MATRIX                       2
-#define TRANSPOSE_MATRIX                    3
-#define NUM_OF_MATRIX                       3
+#define WARP                                32
 
 // total amount of elements of the array
 #define TOTAL_ELEM_ARRAY                    (matrix_data[i].rows*matrix_data[i].columns)
@@ -42,8 +38,15 @@
 
 #define print_matrix(which_matrix)          printArray(which_matrix, matrix_data);
 
-
-#define ending_program                      return 3;
+//De-allocate memory
+#define ending_program                      cudaFree(d_matrix_data); \
+                                            cudaFree(d_a1);          \
+                                            cudaFree(d_a2);          \
+                                            cudaFree(d_a3);          \
+                                            free(array1);            \
+                                            free(array2);            \
+                                            free(array3);            \
+                                            return 3;
 
 
 #define MALLOC_ARRAY(number, type) \
@@ -104,6 +107,20 @@ typedef struct matrix
     
 }matrix_t;
 
+enum NUM_MATRIX
+{
+    FIRST_MATRIX,
+    SECOND_MATRIX,
+    RESULT_MATRIX,
+    TOTAL_MATRIX
+};
+
+enum MAT_RESULT
+{
+    SERIAL,
+    CUDA,
+    OMP
+};
 
 typedef struct matrix_wP
 {

@@ -241,11 +241,30 @@ static void readElements(FILE* filePointer, uint8_t i, matrix_t matrix_data[])
 
 
 
-processStatus_t writeElements(matrix_t matrix_data[])
+processStatus_t writeElements(matrix_t matrix_data[], uint8_t which_matrix)
 {
     FILE* filePointer_result; /* declare the file pointer */
+    errno_t reading = Error;
+    switch (which_matrix)
+    {
+        case SERIAL:
+            reading = (processStatus_t)(fopen_s(&filePointer_result, "matrizC.txt", W_R_MODE)); //Opening file in write mode
+            break;
 
-    errno_t reading = (processStatus_t)(fopen_s(&filePointer_result, "matrizC.txt", W_R_MODE)); //Opening file in write mode
+        case CUDA:
+            reading = (processStatus_t)(fopen_s(&filePointer_result, "matrizC_CUDA.txt", W_R_MODE)); //Opening file in write mode
+            break;
+        
+        case OMP:
+            reading = (processStatus_t)(fopen_s(&filePointer_result, "matrizC_OMP.txt", W_R_MODE)); //Opening file in write mode
+            break;
+        
+        default:
+            reading = Error;
+            break;
+    }
+
+    
     //Validation of the file reading process
     if (((reading != Success) || (filePointer_result == NULL || filePointer_result == 0)))
     {

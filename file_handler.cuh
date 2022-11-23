@@ -93,7 +93,7 @@ void readElements(FILE* filePointer, uint8_t i, matrix_t matrix_data[]);
 *
 *
 */
-processStatus_t writeElements(matrix_t matrix_data[]);
+processStatus_t writeElements(matrix_t matrix_data[], uint8_t which_matrix);
 
 
 

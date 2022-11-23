@@ -34,35 +34,35 @@ processStatus_t validation_of_matMult(matrix_t matrix_data[])
 
 void matrix_transpose(matrix_t matrix_data[], uint8_t which_matrix)
 {
-	double aux = 0;
+	//double aux = 0;
 
-	matrix_data[TRANSPOSE_MATRIX].ptrArray = ALIGNED_MALLOC(matrix_data[which_matrix].rows * matrix_data[which_matrix].columns, ALIGNMENT_8, double); //      returns an 8 BYTE aligned block of memory of (total elements * 8 bytes)
-	matrix_data[TRANSPOSE_MATRIX].columns = matrix_data[which_matrix].rows;
-	matrix_data[TRANSPOSE_MATRIX].rows = matrix_data[which_matrix].columns;
+	//matrix_data[TRANSPOSE_MATRIX].ptrArray = ALIGNED_MALLOC(matrix_data[which_matrix].rows * matrix_data[which_matrix].columns, ALIGNMENT_8, double); //      returns an 8 BYTE aligned block of memory of (total elements * 8 bytes)
+	//matrix_data[TRANSPOSE_MATRIX].columns = matrix_data[which_matrix].rows;
+	//matrix_data[TRANSPOSE_MATRIX].rows = matrix_data[which_matrix].columns;
 
 
-	if (matrix_data[TRANSPOSE_MATRIX].ptrArray != NULL)
-	{
-		for (long long i = 0; i < matrix_data[which_matrix].rows; i++)
-		{
-			for (long long j = 0; j < matrix_data[which_matrix].columns; j++)
-			{
-				MAT_AND_COORD(TRANSPOSE_MATRIX, j, i) = MAT_AND_COORD(which_matrix, i, j);
-			}
-		}
-	}
+	//if (matrix_data[TRANSPOSE_MATRIX].ptrArray != NULL)
+	//{
+	//	for (long long i = 0; i < matrix_data[which_matrix].rows; i++)
+	//	{
+	//		for (long long j = 0; j < matrix_data[which_matrix].columns; j++)
+	//		{
+	//			MAT_AND_COORD(TRANSPOSE_MATRIX, j, i) = MAT_AND_COORD(which_matrix, i, j);
+	//		}
+	//	}
+	//}
 
-	matrix_data[which_matrix].rows = matrix_data[TRANSPOSE_MATRIX].rows;
-	matrix_data[which_matrix].columns = matrix_data[TRANSPOSE_MATRIX].columns;
+	//matrix_data[which_matrix].rows = matrix_data[TRANSPOSE_MATRIX].rows;
+	//matrix_data[which_matrix].columns = matrix_data[TRANSPOSE_MATRIX].columns;
 
-	for (long long i = 0; i < matrix_data[which_matrix].rows; i++)
-	{
-		for (long long j = 0; j < matrix_data[which_matrix].columns; j++)
-		{
-			MAT_AND_COORD(which_matrix, i, j) = MAT_AND_COORD(TRANSPOSE_MATRIX, i, j);
-		}
-	}
-	_aligned_free(matrix_data[TRANSPOSE_MATRIX].ptrArray);
+	//for (long long i = 0; i < matrix_data[which_matrix].rows; i++)
+	//{
+	//	for (long long j = 0; j < matrix_data[which_matrix].columns; j++)
+	//	{
+	//		MAT_AND_COORD(which_matrix, i, j) = MAT_AND_COORD(TRANSPOSE_MATRIX, i, j);
+	//	}
+	//}
+	//_aligned_free(matrix_data[TRANSPOSE_MATRIX].ptrArray);
 }
 
 processStatus_t matrix_mult_serial(matrix_t matrix_data[])
