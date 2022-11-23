@@ -42,11 +42,14 @@ processStatus_t loadTxts(matrix_t matrix_data[]);
 void numElementsTxt(FILE* filePointer, uint8_t i, matrix_t matrix_data[]);
 
 /*
-* Function
+* Function that determine if the quantity of data in the file is enough compared the user requirements
 *
-* params ->
+* params ->			matrix_t matrix_data[]: typedef data that contains all the information about the matrix and all the pointers to the arrays
+*					uint8_t i			  : which matrix will be operating
+*					const char*			  : string that containts the name of the txt file
 *
-* return ->         void
+* return ->         Sucess
+*					Error
 *
 *
 */
@@ -54,11 +57,13 @@ void numElementsTxt(FILE* filePointer, uint8_t i, matrix_t matrix_data[]);
 processStatus_t verifySize(matrix_t matrix_data[], uint8_t i, const char* stringArray[NUM_FILES]);
 
 /*
-* Function
+* Function that saves the txt numbers in dynamic allocations on the CPU and GPU
 *
-* params ->
-*
-* return ->         void
+* params ->			filePointer:			pointer to the txt file
+*					uint8_t i			  : which matrix will be operating
+*					matrix_t matrix_data[]: typedef data that contains all the information about the matrix and all the pointers to the arrays
+* return ->         Sucess
+*					Error
 *
 *
 */
@@ -67,11 +72,14 @@ processStatus_t convertToDynamic(FILE* filePointer, uint8_t i, matrix_t matrix_d
 
 
 /*
-* Function 
+* Function that reads the txt file and assing each one of the data into the arrays 
 *
-* params ->         
+* params ->         filePointer:			pointer to the txt file
+*					uint8_t i			  : which matrix will be operating
+*					matrix_t matrix_data[]: typedef data that contains all the information about the matrix and all the pointers to the arrays
 *                   
-* return ->         void
+* return ->         Sucess
+*					Error
 *
 *
 */
@@ -79,24 +87,27 @@ processStatus_t convertToDynamic(FILE* filePointer, uint8_t i, matrix_t matrix_d
 void readElements(FILE* filePointer, uint8_t i, matrix_t matrix_data[]);
 
 
-
-
-
-
-
 /*
-* Function
+* Function that create a new txt file and save inside it the numbers
 *
-* params ->
-*
-* return ->         void
+* params ->			matrix_t matrix_data[]: typedef data that contains all the information about the matrix and all the pointers to the arrays
+*					uint8_t which_matrix  : which matrix will be operating
+* return ->         Sucess
+*					Error
 *
 *
 */
 processStatus_t writeElements(matrix_t matrix_data[], uint8_t which_matrix);
 
-
-
+/*
+* Function that compares the result matrix and printf if they are not equal
+*
+* params ->			Pointers to each file
+* return ->         void
+*
+*
+*/
+void compareFiles(FILE* serialFile, FILE* cudaFile, FILE* ompFile);
 
 
 #endif // __file_handler_h

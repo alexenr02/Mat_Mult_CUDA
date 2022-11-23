@@ -80,23 +80,3 @@ processStatus_t matrix_mult_serial(matrix_t matrix_data[])
 	}
 	return Success;
 }
-
-processStatus_t matrix_mult_omp(matrix_t matrix_data[])
-{
-
-
-    long long auxK = matrix_data[FIRST_MATRIX].columns;
-
-	for (long long i = 0; i < matrix_data[RESULT_MATRIX].rows; i++)
-	{
-		for (long long j = 0; j < matrix_data[RESULT_MATRIX].columns; j++)
-		{
-
-			for (long long k = 0; k < auxK; k++)
-			{
-				MAT_AND_COORD(RESULT_MATRIX, i, j) = MAT_AND_COORD(RESULT_MATRIX, i, j) + (MAT_AND_COORD(FIRST_MATRIX, i, k) * MAT_AND_COORD(SECOND_MATRIX, k, j));
-			}
-		}
-	}
-	return Success;
-}

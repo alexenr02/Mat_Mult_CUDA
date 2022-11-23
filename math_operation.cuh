@@ -6,11 +6,13 @@
 
 
 /*
-* Function
+* Function that prints the array dynamically allocated
 *
-* params ->
+* params ->			i:				which matrix
+*					matrix_data[]:  typedef data that contains all the information about the matrix and all the pointers to the arrays
 *
-* return ->         void
+* return ->         Sucess
+*					Error
 *
 *
 */
@@ -20,9 +22,10 @@ processStatus_t printArray(uint8_t i, matrix_t matrix_data[]);
 /*
 * Function that validates the user input. No characters or negative numbers allowed
 *
-* params ->
+* params ->			matrix_data[]:  typedef data that contains all the information about the matrix and all the pointers to the arrays
 *
-* return ->         void
+* return ->         Sucess
+*					Error
 *
 *
 */
@@ -30,7 +33,7 @@ processStatus_t validation_of_matMult(matrix_t matrix_data[]);
 
 
 /*
-* Function that validates the user input. No characters or negative numbers allowed
+* Function undefined
 *
 * params ->
 *
@@ -41,24 +44,16 @@ processStatus_t validation_of_matMult(matrix_t matrix_data[]);
 void matrix_transpose(matrix_t matrix_data[]);
 
 /*
-* Function that validates the user input. No characters or negative numbers allowed
+* Function that implements the serial matrix multiplication algorithm
 *
-* params ->
+* params ->			matrix_data[]:  typedef data that contains all the information about the matrix and all the pointers to the arrays
 *
-* return ->         void
+* return ->         Sucess
+*					Error
 *
 *
 */
 processStatus_t matrix_mult_serial(matrix_t matrix_data[]);
-
-
-
-
-
-processStatus_t matrix_mult_omp(matrix_t matrix_data[]);
-
-
-
 
 
 

@@ -4,9 +4,9 @@
 /*
 * Function that validates the user input. No characters or negative numbers allowed
 *
-* params ->
+* params ->			tempInput: variable that holds the filtered user data
 *
-* return ->         void
+* return ->         filtered data
 *
 *
 */

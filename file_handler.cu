@@ -45,6 +45,11 @@ processStatus_t loadTxts(matrix_t matrix_data[])
             matrix_data[RESULT_MATRIX].numElements = TOTAL_ELEM_RESULT_MATRIX;
             matrix_data[RESULT_MATRIX].numElementsInTxt = TOTAL_ELEM_RESULT_MATRIX;
 
+            matrix_data[RESULT_MATRIX_OMP].rows = matrix_data[FIRST_MATRIX].rows;
+            matrix_data[RESULT_MATRIX_OMP].columns = matrix_data[SECOND_MATRIX].columns;
+            matrix_data[RESULT_MATRIX_OMP].numElements = TOTAL_ELEM_RESULT_MATRIX;
+            matrix_data[RESULT_MATRIX_OMP].numElementsInTxt = TOTAL_ELEM_RESULT_MATRIX;
+
         }
         
         errno_t reading = (fopen_s(&filePointer, stringArray[i], READING_MODE)); //Opening file in read mode
@@ -132,17 +137,12 @@ processStatus_t convertToDynamic(FILE* filePointer, uint8_t i, matrix_t matrix_d
     {
         //Fill the first matrix
     case FIRST_MATRIX:
-        array1 = ALIGNED_MALLOC(TOTAL_ELEM_ARRAY, ALIGNMENT_8, double); //      returns a pointer to a block of (TOTAL_ELEM_ARRAY * sizeof(*double)) memory alligned to 8 bytes
         //dynamic allocation
-        //cudaMallocManaged(&array1, TOTAL_ELEM_ARRAY*sizeof(double));
-        // Initialize array in device to 0
-        //cudaMemset(array1, 0, sizeof(double));
-        
+        array1 = ALIGNED_MALLOC(TOTAL_ELEM_ARRAY, ALIGNMENT_8, double); //      returns a pointer to a block of (TOTAL_ELEM_ARRAY * sizeof(*double)) memory alligned to 8 bytes
         if (array1 != NULL)
         {
             matrix_data[i].ptrArray = array1;
             readElements(filePointer, i, matrix_data);
-            
         }
         else
         {
@@ -158,12 +158,13 @@ processStatus_t convertToDynamic(FILE* filePointer, uint8_t i, matrix_t matrix_d
         //cudaMallocManaged(&array2, TOTAL_ELEM_ARRAY * sizeof(double));
         array3 = ALIGNED_MALLOC(matrix_data[RESULT_MATRIX].rows*matrix_data[RESULT_MATRIX].columns, ALIGNMENT_8, double); //      returns an 8 BYTE aligned block of memory of (total elements * 8 bytes)
         //cudaMallocManaged(&array3, matrix_data[RESULT_MATRIX].rows * matrix_data[RESULT_MATRIX].columns * sizeof(double));
-
+        array4 = ALIGNED_MALLOC(matrix_data[RESULT_MATRIX].rows * matrix_data[RESULT_MATRIX].columns, ALIGNMENT_8, double);
         DEBUG(printf("Memoria almacenada correctamente: %lld bytes\n", (long long)_aligned_msize(array3, ALIGNMENT_8, 0));)
-        if ((array2 != NULL) || (array3 != NULL))
+        if ((array2 != NULL) || (array3 != NULL) || array4 != NULL)
         {
             matrix_data[i].ptrArray = array2;
             matrix_data[RESULT_MATRIX].ptrArray = array3;
+            matrix_data[RESULT_MATRIX_OMP].ptrArray = array4;
 
             //initializing with 0's the third matrix that will allocate the result
             for (long long i = 0; i < matrix_data[RESULT_MATRIX].rows; i++)
@@ -171,6 +172,14 @@ processStatus_t convertToDynamic(FILE* filePointer, uint8_t i, matrix_t matrix_d
                 for (long long j = 0; j < matrix_data[RESULT_MATRIX].columns; j++)
                 {
                     MAT_AND_COORD(RESULT_MATRIX, i, j) = 0;
+                }
+            }
+
+            for (long long i = 0; i < matrix_data[RESULT_MATRIX_OMP].rows; i++)
+            {
+                for (long long j = 0; j < matrix_data[RESULT_MATRIX_OMP].columns; j++)
+                {
+                    MAT_AND_COORD(RESULT_MATRIX_OMP, i, j) = 0;
                 }
             }
 
@@ -285,4 +294,51 @@ processStatus_t writeElements(matrix_t matrix_data[], uint8_t which_matrix)
         printf("problemas al cerrar el archivo");
         return Error;
     }
+}
+
+void compareFiles(FILE* serialFile, FILE* cudaFile, FILE* ompFile)
+{
+    // catching characters of the files
+    char ch1 = getc(serialFile);
+    char ch2 = getc(cudaFile);
+    char ch3 = getc(ompFile);
+
+    int error = 0, pos = 0, line = 1;
+
+    // iterate loop till End Of File
+    while (ch1 != EOF && ch2 != EOF && ch3 != EOF)
+    {
+        pos++;
+
+        // if both variable encounters new
+        // line then line variable is incremented
+        // and pos variable is set to 0
+        if (ch1 == '\n' && ch2 == '\n' && ch3 == '\n')
+        {
+            line++;
+            pos = 0;
+        }
+
+        // if fetched data is not equal then
+        // error is incremented
+        if ((ch1 != ch2) || (ch1 != ch3))
+        {
+            error++;
+        }
+
+        // fetching character until end of file
+        ch1 = getc(serialFile);
+        ch2 = getc(cudaFile);
+        ch3 = getc(ompFile);
+    }
+
+    if (error != 0)
+    {
+        printf("\n\n NOT PASS: Results are not equal \n\n");
+    }
+    else
+    {
+        printf("\n\n PASS: Results are equal \n\n");
+    }
+
 }

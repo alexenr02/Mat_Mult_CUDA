@@ -1,3 +1,13 @@
+/**
+  * This Program reads two text files, then upload the data of them to dynamic arrays. Then
+  * make matrix multiplication using three methods: Serial, CUDA, OpenMP.
+  *
+  * authors: Alejandro Enriquez
+  *			 Otoniel Perez
+  *
+  */
+
+
 
 #ifndef __main_cuh
 #define __main_cuh
@@ -13,12 +23,13 @@
 #include <malloc.h>
 #include <Windows.h>
 #include <time.h>
-
 #include <math.h>
 #include <assert.h>
+#include <omp.h>
+#include <cuda_fp16.h>
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
-#include <cuda_fp16.h>
+
 
 
 #define ALIGNMENT_8                         8
@@ -43,10 +54,8 @@
                                             cudaFree(d_a1);          \
                                             cudaFree(d_a2);          \
                                             cudaFree(d_a3);          \
-                                            free(array1);            \
-                                            free(array2);            \
-                                            free(array3);            \
-                                            return 3;
+                                                       
+                                            
 
 
 #define MALLOC_ARRAY(number, type) \
@@ -112,6 +121,7 @@ enum NUM_MATRIX
     FIRST_MATRIX,
     SECOND_MATRIX,
     RESULT_MATRIX,
+    RESULT_MATRIX_OMP,
     TOTAL_MATRIX
 };
 

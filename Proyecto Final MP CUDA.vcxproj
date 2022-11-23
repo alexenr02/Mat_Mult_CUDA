@@ -47,6 +47,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;WIN64;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -85,11 +86,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="file_handler.cu" />
+    <ClCompile Include="fort.cu" />
     <ClCompile Include="math_operation.cu" />
     <ClCompile Include="user_input_handler.cu" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="file_handler.cuh" />
+    <ClInclude Include="fort.cuh" />
     <ClInclude Include="main.cuh" />
     <ClInclude Include="math_operation.cuh" />
     <ClInclude Include="user_input_handler.cuh" />
