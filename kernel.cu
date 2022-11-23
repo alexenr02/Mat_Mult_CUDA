@@ -133,7 +133,7 @@ int main(void)
 
 	int blockdim = WARP; //Num of threads = WARP size
 	dim3 threadsPerBlock(blockdim, blockdim);
-	dim3 blocksPerGrid(1,1);
+	dim3 blocksPerGrid(1,1); // declaration with default value
 
 	blocksPerGrid.x = ceil(double(matrix_data[SECOND_MATRIX].columns)/threadsPerBlock.x);
 	blocksPerGrid.y = ceil(double(matrix_data[FIRST_MATRIX].rows)/threadsPerBlock.y);
